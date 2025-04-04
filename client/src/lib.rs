@@ -37,12 +37,10 @@ impl wasi::exports::cli::run::Guest for Component {
         request
             .set_authority(Some(&authority))
             .expect("failed to set authority");
-        if let Some(pq) = pq.as_ref() {
-            request
-                .set_path_with_query(Some(&pq))
-                .expect("failed to set path_with_query");
-        }
         let pq = pq.map_or("/", |pq| pq);
+        request
+            .set_path_with_query(Some(pq))
+            .expect("failed to set `path_with_query`");
         stderr_tx
             .write(format!("sending GET request to {authority}{pq}\n",).into())
             .await;
